@@ -1,14 +1,16 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
-import { Context as BlogContext } from '../context/BlogContext';
+import { StyleSheet, Text, View, FlatList, Button, TouchableOpacity } from 'react-native';
 
-const IndexScreen = () => {
-  const {state, addBlogPost} = useContext(BlogContext);
+import { Context as BlogContext } from '../context/BlogContext';
+import { Feather } from '@expo/vector-icons';
+
+const IndexScreen = ({
+  navigation,
+}) => {
+  const {state, deleteBlogPost} = useContext(BlogContext);
   
   return (
     <View>
-      <Text>index:</Text>
-      <Button title="Add Posts" onPress={addBlogPost}/>
       <FlatList
         data={state}
         keyExtractor={(blogPost) => blogPost.title}
@@ -37,13 +39,45 @@ const IndexScreen = () => {
           }
         */
         renderItem={({item}) => (
-          <Text>{item.title}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Show', {id: item.id })}>
+            <View style={styles.rowStyle}>
+              <Text style={styles.titleStyle}>{item.title}</Text>
+              <TouchableOpacity onPress={() => deleteBlogPost(item.id)}>
+                <Feather
+                  name="trash"
+                  style={styles.iconStyle}
+                />
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         )}
       />
     </View>
   )
-}
+};
 
-const styles = StyleSheet.create({});
+IndexScreen.navigationOptions = ({ navigation }) => {
+  return {
+    headerRight: <TouchableOpacity onPress={() => navigation.navigate('Create')}>
+      <Feather name="plus" size={30} />
+      </TouchableOpacity>  
+  };
+};
+
+const styles = StyleSheet.create({
+  rowStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    borderColor: 'gray',
+  },
+  titleStyle: {
+    fontSize: 18,
+  },
+  iconStyle : {
+    fontSize: 14,
+  }
+});
 
 export default IndexScreen;
