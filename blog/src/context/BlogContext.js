@@ -35,8 +35,10 @@ const blogReducer = (state, action) => {
 // export default BlogContext;
 
 // ---- automating Context ------
-const addBlogPost = () => {
-  dispatch({ type: 'add_blogpost'});
+const addBlogPost = (dispatch) => {
+  return () => {
+    dispatch({ type: 'add_blogpost' });
+  }
 };
 
-export const { Context, Provider } = createDataContext(blogReducer, addBlogPost, []);
+export const { Context, Provider } = createDataContext(blogReducer, {addBlogPost}, []);
